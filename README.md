@@ -12,10 +12,10 @@
 ## Exec 
 
 ```sh
-    ## for dev
+    ## use go file
     make dev
 
-    ## for prod
+    ## use bin
     make run
 ```
 
