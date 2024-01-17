@@ -1,4 +1,4 @@
-package cmd
+package src
 
 import (
 	"context"
@@ -29,21 +29,25 @@ var (
 			if err != nil {
 				PanicHighLight("aws credentials 지정하고 오셈 default로...")
 			}
-			switch selectBox("고르시오", cliList) {
 
-			case "dashboard":
-				GetDashboard(cfg)
-			case "wakeup":
-				ExecuteWakeup(cfg)
-			case "sleep":
-				ExecuteSleep(cfg)
-			case "exit":
-				fmt.Println("bye")
-				os.Exit(0)
+			for {
+				Clear()
+				switch selectBox("고르시오", cliList) {
+				case "dashboard":
+					GetDashboard(cfg)
+				case "wakeup":
+					ExecuteWakeup(cfg)
+				case "sleep":
+					ExecuteSleep(cfg)
+				case "exit":
+					fmt.Println("bye")
+					os.Exit(0)
 
-			default:
-				PanicHighLight("이건 뭐임...")
+				default:
+					PanicHighLight("이건 뭐임...")
+				}
 			}
+
 		},
 	}
 )

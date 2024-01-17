@@ -1,7 +1,7 @@
 package main
 
-import "github.com/zkfmapf123/wake-up-friends/cmd"
+import src "github.com/zkfmapf123/wake-up-friends/src/cmd"
 
 func main() {
-	cmd.Execute()
+	src.Execute()
 }

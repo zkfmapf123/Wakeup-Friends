@@ -1,4 +1,4 @@
-package cmd
+package src
 
 import "github.com/aws/aws-sdk-go-v2/aws"
 

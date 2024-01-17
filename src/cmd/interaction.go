@@ -1,4 +1,4 @@
-package cmd
+package src
 
 import "github.com/AlecAivazis/survey/v2"
 
@@ -10,6 +10,16 @@ func selectBox(msg string, list []string) string {
 
 	var answer string
 
+	survey.AskOne(prompt, &answer, nil)
+	return answer
+}
+
+func PressEnter() string {
+	prompt := &survey.Input{
+		Message: "Press Enter the Back",
+	}
+
+	var answer string
 	survey.AskOne(prompt, &answer, nil)
 	return answer
 }
