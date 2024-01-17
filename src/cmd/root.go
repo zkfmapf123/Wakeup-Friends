@@ -36,9 +36,9 @@ var (
 				case "dashboard":
 					GetDashboard(cfg)
 				case "wakeup":
-					ExecuteWakeup(cfg)
+					BotherEC2(cfg, true)
 				case "sleep":
-					ExecuteSleep(cfg)
+					BotherEC2(cfg, false)
 				case "exit":
 					fmt.Println("bye")
 					os.Exit(0)

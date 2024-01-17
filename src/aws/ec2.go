@@ -13,7 +13,7 @@ type EC2ObjectParams struct {
 	Name     string
 }
 
-func GetEC2(cfg aws.Config) map[string]EC2ObjectParams {
+func GetEC2(cfg aws.Config, filterFn func(status string) bool) map[string]EC2ObjectParams {
 	client := ec2.NewFromConfig(cfg)
 	input := &ec2.DescribeInstancesInput{}
 
@@ -30,10 +30,12 @@ func GetEC2(cfg aws.Config) map[string]EC2ObjectParams {
 			for _, tag := range ins.Tags {
 				if *tag.Key == "Name" {
 
-					ec2Object[*insId] = EC2ObjectParams{
-						State:    string(insState),
-						PublicIp: getPublicInstance(publicIp),
-						Name:     *tag.Value,
+					if filterFn(string(insState)) {
+						ec2Object[*insId] = EC2ObjectParams{
+							State:    string(insState),
+							PublicIp: getPublicInstance(publicIp),
+							Name:     *tag.Value,
+						}
 					}
 				}
 			}

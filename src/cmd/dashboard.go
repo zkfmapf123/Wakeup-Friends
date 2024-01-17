@@ -1,29 +1,24 @@
 package src
 
 import (
-	"os"
+	"strings"
 
 	"github.com/aws/aws-sdk-go-v2/aws"
-	"github.com/olekukonko/tablewriter"
 	src "github.com/zkfmapf123/wake-up-friends/src/aws"
 )
 
 func GetDashboard(cfg aws.Config) string {
-	list := src.GetEC2(cfg)
+	list := src.GetEC2(cfg, func(status string) bool {
+		allState := []string{"running", "stopped", "stopping", "pending", "shutting-down", "terminated"}
+		for _, v := range allState {
+			if strings.Contains(v, status) {
+				return true
+			}
+		}
 
-	var tableData [][]string
-	for k, v := range list {
-		tableData = append(tableData, []string{k, v.Name, v.State, v.PublicIp})
-	}
+		return false
+	})
 
-	table := tablewriter.NewWriter(os.Stdout)
-	table.SetHeader([]string{"InstanceID", "Name", "State", "PublicIp"})
-
-	for _, row := range tableData {
-		table.Append(row)
-	}
-
-	table.Render()
-
+	printTable(list)
 	return PressEnter()
 }

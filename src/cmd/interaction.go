@@ -1,6 +1,12 @@
 package src
 
-import "github.com/AlecAivazis/survey/v2"
+import (
+	"os"
+
+	"github.com/AlecAivazis/survey/v2"
+	"github.com/olekukonko/tablewriter"
+	src "github.com/zkfmapf123/wake-up-friends/src/aws"
+)
 
 func selectBox(msg string, list []string) string {
 	prompt := &survey.Select{
@@ -22,4 +28,20 @@ func PressEnter() string {
 	var answer string
 	survey.AskOne(prompt, &answer, nil)
 	return answer
+}
+
+func printTable(list map[string]src.EC2ObjectParams) {
+	var tableData [][]string
+	for k, v := range list {
+		tableData = append(tableData, []string{k, v.Name, v.State, v.PublicIp})
+	}
+
+	table := tablewriter.NewWriter(os.Stdout)
+	table.SetHeader([]string{"InstanceID", "Name", "State", "PublicIp"})
+
+	for _, row := range tableData {
+		table.Append(row)
+	}
+
+	table.Render()
 }
