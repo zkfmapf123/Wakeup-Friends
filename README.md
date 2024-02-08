@@ -19,6 +19,15 @@
     make run
 ```
 
+## 구성
+
+```
+    make build
+    mv ./bin/main ./bin/friends
+    mv /usr/local/bin ./bin/friends
+    friends
+```
+
 ## 기능
 
 - Dashboard
