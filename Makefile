@@ -1,5 +1,5 @@
 build:
-	go build -o ./bin/main main.go
+	go build -o ./bin/friends main.go
 
 dev:
 	go run main.go
@@ -9,6 +9,6 @@ test:
 
 run: test
 	@make build
-	./bin/main
+	./bin/friends
 	
 	

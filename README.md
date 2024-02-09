@@ -21,11 +21,22 @@
 
 ## 구성
 
-```
+```sh
+    ## 명령어 바로 실행하기 
     make build
-    mv ./bin/main ./bin/friends
     mv /usr/local/bin ./bin/friends
     friends
+
+    ## 명령어 실행
+    ## profile : 기본값은 default
+    ## region : 기본값은 ap-northeast-2
+    friends -p [profile] -r [region]
+    
+    ## ex1) profile : default, region : ap-northeast-2
+    friends 
+
+    ## ex2) profile : leedonggyu, region : us-east-1
+    friends -p leedonggyu -r us-east-1
 ```
 
 ## 기능

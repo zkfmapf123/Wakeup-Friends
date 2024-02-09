@@ -10,6 +10,7 @@ import (
 	"github.com/aws/aws-sdk-go-v2/config"
 	"github.com/fatih/color"
 	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
 )
 
 var (
@@ -25,7 +26,12 @@ var (
 		Run: func(cmd *cobra.Command, args []string) {
 			Clear()
 
-			cfg, err := config.LoadDefaultConfig(context.TODO())
+			profile, region := viper.GetString("profile"), viper.GetString("region")
+
+			cfg, err := config.LoadDefaultConfig(context.TODO(),
+				config.WithSharedConfigProfile(profile),
+				config.WithRegion(region))
+
 			if err != nil {
 				PanicHighLight("aws credentials 지정하고 오셈 default로...")
 			}
@@ -52,9 +58,31 @@ var (
 	}
 )
 
+func initial() {
+
+	// init
+	cobra.OnInitialize(func() {
+
+		if viper.GetString("profile") == "" {
+			viper.Set("profile", "default")
+		}
+
+		if viper.GetString("region") == "" {
+			viper.Set("region", "ap-northeast-2")
+		}
+	})
+
+	rootCmd.PersistentFlags().StringP("profile", "p", "", "[Optional] aws profile")
+	rootCmd.PersistentFlags().StringP("region", "r", "", "[Optional] aws region")
+
+	viper.BindPFlag("profile", rootCmd.PersistentFlags().Lookup("profile"))
+	viper.BindPFlag("region", rootCmd.PersistentFlags().Lookup("region"))
+}
+
 func Execute() {
 
 	Clear()
+	initial()
 	if err := rootCmd.Execute(); err != nil {
 		PanicHighLight(err.Error())
 	}
