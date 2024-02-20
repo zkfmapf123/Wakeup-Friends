@@ -32,32 +32,33 @@ func BotherEC2(cfg aws.Config, isWakeup bool) string {
 		instanceIdAndName = append(instanceIdAndName, fmt.Sprintf("%s/%s", k, v.Name))
 	}
 
-	instand := selectBox(msg, instanceIdAndName)
-
+	instances := selectMultipleBox(msg, instanceIdAndName)
 	client := ec2.NewFromConfig(cfg)
 
-	// id/name
-	id := strings.Split(instand, "/")[0]
+	for _, instance := range instances {
+		// id/name
+		id := strings.Split(instance, "/")[0]
 
-	// Running
-	if isWakeup {
-		input := &ec2.StartInstancesInput{
-			InstanceIds: []string{id},
-		}
+		// Running
+		if isWakeup {
+			input := &ec2.StartInstancesInput{
+				InstanceIds: []string{id},
+			}
 
-		_, err := client.StartInstances(context.TODO(), input)
-		if err != nil {
-			PanicHighLight(err.Error())
-		}
-		// Stopped
-	} else {
-		input := &ec2.StopInstancesInput{
-			InstanceIds: []string{id},
-		}
+			_, err := client.StartInstances(context.TODO(), input)
+			if err != nil {
+				PanicHighLight(err.Error())
+			}
+			// Stopped
+		} else {
+			input := &ec2.StopInstancesInput{
+				InstanceIds: []string{id},
+			}
 
-		_, err := client.StopInstances(context.TODO(), input)
-		if err != nil {
-			PanicHighLight(err.Error())
+			_, err := client.StopInstances(context.TODO(), input)
+			if err != nil {
+				PanicHighLight(err.Error())
+			}
 		}
 	}
 

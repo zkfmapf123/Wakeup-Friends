@@ -20,6 +20,17 @@ func selectBox(msg string, list []string) string {
 	return answer
 }
 
+func selectMultipleBox(msg string, list []string) []string {
+	prompt := &survey.MultiSelect{
+		Message: msg,
+		Options: list,
+	}
+
+	answer := []string{}
+	survey.AskOne(prompt, &answer)
+	return answer
+}
+
 func PressEnter() string {
 	prompt := &survey.Input{
 		Message: "Press Enter the Back",
