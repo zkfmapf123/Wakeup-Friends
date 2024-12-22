@@ -5,9 +5,6 @@ on:
     tags:
       - 'v*.*.*'
 
-env:
-    TASK_NAME: Friends
-
 jobs:
   release:
     runs-on: ubuntu-latest
@@ -19,43 +16,50 @@ jobs:
       - name: Set up Go
         uses: actions/setup-go@v3
         with:
-          go-version: '1.23'  # 원하는 Go 버전으로 변경하세요.
+          go-version: '1.23'
 
       - name: Build Go project
         run: |
-          GOOS=darwin GOARCH=amd64 go build -o $TASK_NAME
+          GOOS=darwin GOARCH=amd64 go build -o Friends
+        env:
+          TASK_NAME: Friends  # TASK_NAME을 env로 설정
 
       - name: Extract Tag Name
         id: extract_tag
-        run: echo "TAG_NAME=${GITHUB_REF##*/}" >> $GITHUB_ENV
+        run: |
+          echo "TAG_NAME=${GITHUB_REF##*/}" >> $GITHUB_ENV  # GITHUB_ENV를 사용하여 TAG_NAME 저장
 
       - name: Create GitHub Release
         id: create_release
-        uses: actions/create-release@v1
+        uses: actions/create-release@v1.0.0
         env:
-          GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: ${{ env.TAG_NAME }}
+          tag_name: ${{ env.TAG_NAME }}  # GITHUB_ENV에서 TAG_NAME 사용
           release_name: "${{ env.TAG_NAME }}"
           body: "Release for version ${{ env.TAG_NAME }}"
           draft: false
           prerelease: false
 
       - name: Upload Release Asset
-        uses: actions/upload-release-asset@v1
+        uses: actions/upload-release-asset@v1.0.0
         env:
-          GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./$TASK_NAME
-          asset_name: $TASK_NAME
-          asset_content_type: application/x-msdownload
-      
+          asset_path: ./${{ env.TASK_NAME }}  # GITHUB_ENV에서 TASK_NAME 사용
+          asset_name: ${{ env.TASK_NAME }}
+          asset_content_type: application/octet-stream
+
       - name: Display Release URL
         run: |
           echo "Release URL: ${{ steps.create_release.outputs.html_url }}"
-      
+
       - name: Calculate SHA-256 Checksum
         run: |
-          SHA256=$(shasum -a 256 $TASK_NAME | awk '{ print $1 }')
+          if [[ "$OSTYPE" == "darwin"* ]]; then
+            SHA256=$(shasum -a 256 ${{ env.TASK_NAME }} | awk '{ print $1 }')
+          else
+            SHA256=$(sha256sum ${{ env.TASK_NAME }} | awk '{ print $1 }')
+          fi
           echo "SHA-256: $SHA256"
