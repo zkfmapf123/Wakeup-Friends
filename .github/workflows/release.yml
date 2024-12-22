@@ -20,7 +20,7 @@ jobs:
 
       - name: Build Go project
         run: |
-          GOOS=darwin GOARCH=amd64 go build -o ${{ env.TAG_NAME }}
+          GOOS=darwin GOARCH=amd64 go build -o ${{ env.TASK_NAME }}
 
       - name: Extract Tag Name
         id: extract_tag
