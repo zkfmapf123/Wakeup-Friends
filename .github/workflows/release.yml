@@ -20,7 +20,7 @@ jobs:
 
       - name: Build Go project
         run: |
-          GOOS=darwin GOARCH=amd64 go build -o ${{ env.TASK_NAME }}
+          GOOS=darwin GOARCH=amd64 go build -o Friends
 
       - name: Extract Tag Name
         id: extract_tag
@@ -44,8 +44,8 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./${{env.TASK_NAME}}
-          asset_name: ${{env.TASK_NAME}}
+          asset_path: ./Friends
+          asset_name: Friends
           asset_content_type: application/x-msdownload
       
       - name: Display Release URL
@@ -54,5 +54,5 @@ jobs:
       
       - name: Calculate SHA-256 Checksum
         run: |
-          SHA256=$(shasum -a 256 ${{env.TASK_NAME}} | awk '{ print $1 }')
+          SHA256=$(shasum -a 256 Friends | awk '{ print $1 }')
           echo "SHA-256: $SHA256"
